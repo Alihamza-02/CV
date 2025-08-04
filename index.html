@@ -1,98 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ali Hamza - Resume</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-      color: #0d47a1;
-    }
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #ffffff;
-      padding: 40px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-    }
-    header {
-      text-align: center;
-      border-bottom: 2px solid #90caf9;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #1565c0;
-    }
-    header p {
-      margin: 5px 0;
-      font-size: 1.2em;
-    }
-    section {
-      margin-bottom: 30px;
-    }
-    h2 {
-      border-bottom: 1px solid #90caf9;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-      color: #1976d2;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      margin-bottom: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Driving Game</title>
+    <style>
+        body { margin: 0; background: #333; }
+        canvas { display: block; margin: auto; background: #555; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Ali Hamza</h1>
-      <p>Contact: 0314-7176719</p>
-    </header>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
 
-    <section>
-      <h2>Professional Summary</h2>
-      <p>
-        Motivated and detail-oriented graduate passionate about technology and cloud infrastructure. Currently focused on developing skills in DevOps, including automation, CI/CD pipelines, containerization, and cloud solutions. Committed to continuous learning and delivering high-quality solutions.
-      </p>
-    </section>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-    <section>
-      <h2>Work Experience</h2>
-      <ul>
-        <li>Learning & Development - Dedicated to enhancing DevOps expertise through hands-on projects and continuous skill improvement.</li>
-        <li>Strong problem-solving and analytical skills with a willingness to take on challenging tasks.</li>
-      </ul>
-    </section>
+const carWidth = 40, carHeight = 80;
+let carX = canvas.width / 2 - carWidth / 2;
+const carY = canvas.height - carHeight - 20;
+let carSpeed = 5;
 
-    <section>
-      <h2>Education</h2>
-      <p>Graduate Student</p>
-    </section>
+const enemyWidth = 40, enemyHeight = 80;
+let enemyX = Math.random() * (canvas.width - enemyWidth);
+let enemyY = -enemyHeight;
+let enemySpeed = 4;
 
-    <section>
-      <h2>Skills</h2>
-      <ul>
-        <li>DevOps Practices & Tools (Docker, CI/CD, Linux basics)</li>
-        <li>Problem-Solving & Continuous Learning</li>
-        <li>Collaboration & Teamwork</li>
-      </ul>
-    </section>
+let score = 0;
+let gameOver = false;
 
-    <section>
-      <h2>Certifications / Projects</h2>
-      <p>Currently focusing on practical DevOps projects and certifications.</p>
-    </section>
-  </div>
+function drawCar(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, carWidth, carHeight);
+}
+
+function update() {
+    if (gameOver) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Move enemy
+    enemyY += enemySpeed;
+    if (enemyY > canvas.height) {
+        enemyY = -enemyHeight;
+        enemyX = Math.random() * (canvas.width - enemyWidth);
+        score++;
+        enemySpeed += 0.2;
+    }
+
+    // Collision
+    if (carX < enemyX + enemyWidth &&
+        carX + carWidth > enemyX &&
+        carY < enemyY + enemyHeight &&
+        carY + carHeight > enemyY) {
+        gameOver = true;
+        alert("Game Over! Score: " + score);
+        return;
+    }
+
+    // Draw road & cars
+    ctx.fillStyle = "#666";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawCar(carX, carY, "blue");
+    drawCar(enemyX, enemyY, "red");
+
+    // Score
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score, 10, 20);
+
+    requestAnimationFrame(update);
+}
+
+// Controls
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" && carX > 0) carX -= carSpeed;
+    if (e.key === "ArrowRight" && carX < canvas.width - carWidth) carX += carSpeed;
+});
+
+update();
+</script>
 </body>
 </html>
