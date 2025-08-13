@@ -1,0 +1,87 @@
+Dockerizing a Website with Nginx — Beginner Guide (Ubuntu)
+1. What You Need
+Docker installed
+Check:
+
+docker --version
+A simple website folder (must have an index.html file).
+
+Example folder:
+
+my-website/
+└── index.html
+2. Create a Dockerfile
+Inside your my-website folder, make a file named Dockerfile (no extension):
+
+FROM nginx:latest
+COPY . /usr/share/nginx/html
+EXPOSE 80
+
+This means:
+
+Use Nginx web server.
+
+Copy your files into Nginx’s default HTML folder.
+
+Expose port 80 (web traffic).
+
+3. Build the Image
+Open terminal inside your my-website folder:
+
+docker build -t my-website .
+4. Run the Container
+
+docker run -d -p 8080:80 --name my-container my-website
+-p 8080:80 → Access site at localhost:8080
+
+-d → Run in background.
+
+5. Open Your Website
+In your browser:
+
+http://localhost:8080
+6. Stop the Website
+
+docker stop my-container
+7. Push to GitHub (Ubuntu Steps)
+Step 1 — Initialize Git
+
+cd my-website
+git init
+
+Step 2 — Add Your Files
+
+git add .
+git commit -m "First commit - Dockerized website with Nginx"
+Step 3 — Create a New Repository on GitHub
+Go to GitHub
+
+Click New → Give a name (e.g., docker-nginx-site) → Create.
+
+Step 4 — Connect Repository (SSH method recommended)
+Check if you have SSH key:
+
+ls ~/.ssh/id_ed25519.pub
+If not, create:
+
+ssh-keygen -t ed25519 -C "your-email@example.com"
+Press Enter for all prompts.
+
+Show your key:
+
+cat ~/.ssh/id_ed25519.pub
+Copy it and paste into GitHub:
+
+Go to GitHub → Settings → SSH and GPG keys → New SSH key → Paste → Save.
+
+Step 5 — Link GitHub Repo
+Replace USERNAME and REPO with yours:
+
+
+git remote add origin git@github.com:USERNAME/REPO.git
+Step 6 — Push the Code
+
+git branch -M main
+git push -u origin main
+
+✅ Now your Dockerized website is running locally with Nginx and the code is stored on GitHub.
