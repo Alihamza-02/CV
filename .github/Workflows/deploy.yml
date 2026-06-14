@@ -1,0 +1,34 @@
+name: Local CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Server Info
+        run: |
+          hostname
+          pwd
+
+      - name: Build Docker Image
+        run: |
+          docker build -t myapp:latest .
+
+      - name: Stop Old Container
+        run: |
+          docker rm -f myapp || true
+
+      - name: Run New Container
+        run: |
+          docker run -d \
+            --name myapp \
+            -p 8080:80 \
+            myapp:latest
